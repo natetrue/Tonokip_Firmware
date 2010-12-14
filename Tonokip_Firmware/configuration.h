@@ -3,7 +3,6 @@
 
 // NO RS485/EXTRUDER CONTROLLER SUPPORT
 // PLEASE VERIFY PIN ASSIGNMENTS FOR YOUR CONFIGURATION!!!!!!!
-#define MOTHERBOARD 3 // ATMEGA168 0, SANGUINO 1, MOTHERBOARD = 2, MEGA 3, ATMEGA328 4
 
 // THERMOCOUPLE SUPPORT UNTESTED... USE WITH CAUTION!!!!
 const bool USE_THERMISTOR = true; //Set to false if using thermocouple
@@ -14,10 +13,10 @@ const bool USE_THERMISTOR = true; //Set to false if using thermocouple
 // units are in millimeters or whatever length unit you prefer: inches,football-fields,parsecs etc
 
 //Calibration variables
-float x_steps_per_unit = 80.376;
-float y_steps_per_unit = 80.376;
-float z_steps_per_unit = 6667.184;
-float e_steps_per_unit = 16;
+float x_steps_per_unit = 64;
+float y_steps_per_unit = 64;
+float z_steps_per_unit = 3072;
+float e_steps_per_unit = 17.6;	//17.6 for adrians 36.65 for MG extruder    What is wades?
 float max_feedrate = 18000;
 
 //float x_steps_per_unit = 10.047;
@@ -47,8 +46,8 @@ const bool INVERT_E_DIR = false;
 const bool ENDSTOPS_INVERTING = true;
 const bool min_software_endstops = false; //If true, axis won't move to coordinates less than zero.
 const bool max_software_endstops = true;  //If true, axis won't move to coordinates greater than the defined lengths below.
-const int X_MAX_LENGTH = 200;
-const int Y_MAX_LENGTH = 200;
+const int X_MAX_LENGTH = 212;
+const int Y_MAX_LENGTH = 205;
 const int Z_MAX_LENGTH = 70;
 
 #define BAUDRATE 115200
