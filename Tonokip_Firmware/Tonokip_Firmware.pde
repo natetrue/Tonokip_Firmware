@@ -22,7 +22,8 @@
 // M105 - Read current temp
 // M106 - Fan on
 // M107 - Fan off
-// M109 - Wait for current temp to reach target temp.
+// M109 - Wait for nozzle current temp to reach target temp.
+// M116 - Wait for nozzle and Bed to get up to target temp     **Still working on this one.
 // M140 - Set heated bed temp
 
 //Custom M Codes
@@ -103,7 +104,7 @@ void loop()
 {
   get_command();
   manage_heater();
-  
+  manage_bed_heater();
   manage_inactivity(1); //shutdown if not receiving any new commands
 }
 
@@ -262,7 +263,10 @@ inline void process_commands()
         if(code_seen('P')) codenum = code_value(); // milliseconds to wait
         if(code_seen('S')) codenum = code_value()*1000; // seconds to wait
         previous_millis_heater = millis();  // keep track of when we started waiting
-        while((millis() - previous_millis_heater) < codenum ) manage_heater(); //manage heater until time is up
+        while((millis() - previous_millis_heater) < codenum )
+		{ manage_heater(); //manage heater until time is up
+			manage_bed_heater();
+		}
         break;
       case 90: // G90
         relative_mode = false;
@@ -291,6 +295,8 @@ inline void process_commands()
       case 105: // M105
         Serial.print("T:");
         Serial.println( analog2temp(analogRead(TEMP_0_PIN)) ); 
+	Serial.print("B:");
+        Serial.println( analog2temp(analogRead(BED_TEMP_0_PIN)) ); 
         if(!code_seen('N')) return;  // If M105 is sent from generated gcode, then it needs a response.
         break;
       case 109: // M109 - Wait for heater to reach target.
@@ -456,6 +462,7 @@ void linear_move(unsigned long x_steps_remaining, unsigned long y_steps_remainin
     
     if( (millis() - previous_millis_heater) >= 500 ) {
       manage_heater();
+	manage_bed_heater();
       previous_millis_heater = millis();
       
       manage_inactivity(2);
@@ -528,12 +535,12 @@ inline void manage_heater()
   if(nozzle_current_raw >= nozzle_target_raw)
    {
      digitalWrite(HEATER_0_PIN,LOW);
-     digitalWrite(LED_PIN,LOW);
+     digitalWrite(LED_0_PIN,LOW);
    }
   else 
   {
     digitalWrite(HEATER_0_PIN,HIGH);
-    digitalWrite(LED_PIN,HIGH);
+    digitalWrite(LED_0_PIN,HIGH);
   }
 }
 
@@ -542,8 +549,16 @@ inline void manage_bed_heater()
   bed_current_raw = analogRead(BED_TEMP_0_PIN);                  // If using thermistor, when the heater is colder than targer temp, we get a higher analog reading than target, 
   if(USE_THERMISTOR) bed_current_raw = 1023 - bed_current_raw;   // this switches it up so that the reading appears lower than target for the control logic.
   
-  if(bed_current_raw >= bed_target_raw) digitalWrite(BED_HEATER_0_PIN,LOW);
-  else digitalWrite(BED_HEATER_0_PIN,HIGH);
+  if(bed_current_raw >= bed_target_raw)
+	 {
+		digitalWrite(BED_HEATER_0_PIN,LOW);
+		digitalWrite(LED_1_PIN,LOW);
+	}
+  else 
+	{
+	digitalWrite(BED_HEATER_0_PIN,HIGH);
+	digitalWrite(LED_1_PIN,HIGH);
+	}
 }
 
 // Takes temperature value as input and returns corresponding analog value from RepRap thermistor temp table.

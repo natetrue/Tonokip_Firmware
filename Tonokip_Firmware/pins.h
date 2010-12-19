@@ -1,7 +1,7 @@
 #ifndef PINS_H
 #define PINS_H
 
-//////////////////FIX THIS//////////////
+//////////////////FIX THIS//////////////why?
 #ifndef __AVR_ATmega1280__
  #ifndef __AVR_ATmega2560__
  #error Oops!  Make sure you have 'Arduino Mega' selected from the 'Tools -> Boards' menu.
@@ -30,7 +30,8 @@
 #define E_DIR_PIN          34
 #define E_ENABLE_PIN       30
 
-#define LED_PIN            13
+#define LED_0_PIN            14		//right now this is associated with the nozzle
+#define LED_1_PIN		15	//right now this is for the heated bed. Ramps v2 should have this in hardware for each mosfet IMO.
 
 //#define FAN_PIN            11 // UNCOMMENT THIS LINE FOR V1.0
 #define FAN_PIN            10 // THIS LINE FOR V1.1
@@ -40,8 +41,7 @@
 
 //#define HEATER_0_PIN        12  // UNCOMMENT THIS LINE FOR V1.0
 #define HEATER_0_PIN       9 // THIS LINE FOR V1.1
-
-#define TEMP_0_PIN          2   // MUST USE ANALOG INPUT NUMBERING NOT DIGITAL OUTPUT NUMBERING!!!!!!!!!
+#define TEMP_0_PIN          2   
 
 #define BED_TEMP_0_PIN		1
 #define BED_HEATER_0_PIN	8
