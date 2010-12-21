@@ -23,8 +23,9 @@
 // M106 - Fan on
 // M107 - Fan off
 // M109 - Wait for nozzle current temp to reach target temp.
-// M116 - Wait for nozzle and Bed to get up to target temp     **Still working on this one.
+// M116 - Wait for nozzle AND Bed to get up to target temp     **Still working on this one.
 // M140 - Set heated bed temp
+// M141 - Set chamber temp		**Still working on this one.
 
 //Custom M Codes
 // M80  - Turn on Power Supply
@@ -294,9 +295,9 @@ inline void process_commands()
         break;
       case 105: // M105
         Serial.print("T:");
-        Serial.println( analog2temp(analogRead(TEMP_0_PIN)) ); 
-	Serial.print("B:");
-        Serial.println( analog2temp(analogRead(BED_TEMP_0_PIN)) ); 
+        Serial.print( analog2temp(analogRead(TEMP_0_PIN)) ); 
+	Serial.print(" B:");
+        Serial.println( analog2temp(analogRead(BED_TEMP_0_PIN)) );
         if(!code_seen('N')) return;  // If M105 is sent from generated gcode, then it needs a response.
         break;
       case 109: // M109 - Wait for heater to reach target.
@@ -532,16 +533,9 @@ inline void manage_heater()
   nozzle_current_raw = analogRead(TEMP_0_PIN);                  // If using thermistor, when the heater is colder than targer temp, we get a higher analog reading than target, 
   if(USE_THERMISTOR) nozzle_current_raw = 1023 - nozzle_current_raw;   // this switches it up so that the reading appears lower than target for the control logic.
   
-  if(nozzle_current_raw >= nozzle_target_raw)
-   {
-     digitalWrite(HEATER_0_PIN,LOW);
-     digitalWrite(LED_0_PIN,LOW);
-   }
-  else 
-  {
-    digitalWrite(HEATER_0_PIN,HIGH);
-    digitalWrite(LED_0_PIN,HIGH);
-  }
+  if(nozzle_current_raw >= nozzle_target_raw) digitalWrite(HEATER_0_PIN, LOW);
+  else digitalWrite(HEATER_0_PIN, HIGH);
+
 }
 
 inline void manage_bed_heater()
@@ -549,16 +543,9 @@ inline void manage_bed_heater()
   bed_current_raw = analogRead(BED_TEMP_0_PIN);                  // If using thermistor, when the heater is colder than targer temp, we get a higher analog reading than target, 
   if(USE_THERMISTOR) bed_current_raw = 1023 - bed_current_raw;   // this switches it up so that the reading appears lower than target for the control logic.
   
-  if(bed_current_raw >= bed_target_raw)
-	 {
-		digitalWrite(BED_HEATER_0_PIN,LOW);
-		digitalWrite(LED_1_PIN,LOW);
-	}
-  else 
-	{
-	digitalWrite(BED_HEATER_0_PIN,HIGH);
-	digitalWrite(LED_1_PIN,HIGH);
-	}
+  if(bed_current_raw >= bed_target_raw) digitalWrite(BED_HEATER_0_PIN, LOW);
+  else digitalWrite(BED_HEATER_0_PIN, HIGH);
+
 }
 
 // Takes temperature value as input and returns corresponding analog value from RepRap thermistor temp table.

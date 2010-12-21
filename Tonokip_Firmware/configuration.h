@@ -41,7 +41,7 @@ const bool min_software_endstops = false; //If true, axis won't move to coordina
 const bool max_software_endstops = true;  //If true, axis won't move to coordinates greater than the defined lengths below.
 const int X_MAX_LENGTH = 212;
 const int Y_MAX_LENGTH = 205;
-const int Z_MAX_LENGTH = 105;
+const int Z_MAX_LENGTH = 70;
 
 #define BAUDRATE 115200
 

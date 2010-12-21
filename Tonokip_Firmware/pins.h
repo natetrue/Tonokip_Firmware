@@ -30,9 +30,6 @@
 #define E_DIR_PIN          34
 #define E_ENABLE_PIN       30
 
-#define LED_0_PIN            14		//right now this is associated with the nozzle
-#define LED_1_PIN		15	//right now this is for the heated bed. Ramps v2 should have this in hardware for each mosfet IMO.
-
 //#define FAN_PIN            11 // UNCOMMENT THIS LINE FOR V1.0
 #define FAN_PIN            10 // THIS LINE FOR V1.1
 
@@ -45,5 +42,15 @@
 
 #define BED_TEMP_0_PIN		1
 #define BED_HEATER_0_PIN	8
+
+//chamber settings
+
+#define CHAMBER_TEMP		4	//analog
+
+#define HOT_AIR_FLAP		4	//servo actuated, need PWM	  
+#define HOT_AIR_FAN		5
+
+#define COLD_AIR_FLAP	  	6	//servo actuated, need PWM
+#define COLD_AIR_FAN	    	7
 
 #endif

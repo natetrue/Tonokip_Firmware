@@ -1,7 +1,10 @@
 Tonokip RepRap firmware rewrite based off of Hydra-mmm firmware.
 
+This version is designed to work on the RAMPS.
+
 TODO:
 Inactivity timer failsafe that can be enabled/disabled by using a custom Mcode.
 Max Endstop support (easy).
 Store internal position using steps(long int) instead of units(float).
 Test thermocouple support.
+Work on implimenting and testing the M116 and M141 codes.
