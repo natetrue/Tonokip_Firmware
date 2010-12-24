@@ -23,7 +23,8 @@
 // M106 - Fan on
 // M107 - Fan off
 // M109 - Wait for nozzle current temp to reach target temp.
-// M116 - Wait for nozzle AND Bed to get up to target temp     **Still working on this one.
+// M112 - Emergency Stop
+// M116 - Wait for nozzle AND Bed to get up to target temp     
 // M140 - Set heated bed temp
 // M141 - Set chamber temp		**Still working on this one.
 
@@ -311,6 +312,23 @@ inline void process_commands()
             previous_millis_heater = millis(); 
           }
           manage_heater();
+        }
+        break;
+	case 112: // M112 - Emergency Stop
+        kill(5);
+        break;
+	case 116: // M116 - Wait for heater and bed to reach target.
+        while(nozzle_current_raw < nozzle_target_raw || bed_current_raw < bed_target_raw) {
+          if( (millis()-previous_millis_heater) > 1000 ) //Print Temp Reading every 1 second while heating up.
+          {
+            Serial.print("T:");
+            Serial.print( analog2temp(analogRead(TEMP_0_PIN)) );  
+	    Serial.print("B:");
+            Serial.println( analog2temp(analogRead(BED_TEMP_0_PIN)) ); 
+            previous_millis_heater = millis(); 
+          }
+          manage_heater();
+	  manage_bed_heater();
         }
         break;
 	case 140: // M140
@@ -610,7 +628,7 @@ float analog2temp(int raw) {
 inline void kill(byte debug)
 {
   if(HEATER_0_PIN > -1) digitalWrite(HEATER_0_PIN,LOW);
-  
+  if(BED_HEATER_0_PIN > -1) digitalWrite(BED_HEATER_0_PIN,LOW);
   disable_x;
   disable_y;
   disable_z;
@@ -626,6 +644,7 @@ inline void kill(byte debug)
       case 2: Serial.print("Linear Move Abort, Last Line: "); break;
       case 3: Serial.print("Homing X Min Stop Fail, Last Line: "); break;
       case 4: Serial.print("Homing Y Min Stop Fail, Last Line: "); break;
+      case 5: Serial.print("User terminated, Last Line: "); break;
     } 
     Serial.println(gcode_LastN);
     delay(5000); // 5 Second delay
