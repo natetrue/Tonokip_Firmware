@@ -35,7 +35,6 @@
 // M83  - Set E codes relative while in Absolute Coordinates (G90) mode
 // M84  - Disable steppers until next move
 // M85  - Set inactivity shutdown timer with parameter S<seconds>. To disable set zero (default)
-// M86  - If Endstop is Not Activated then Abort Print. Specify X and/or Y
 // M92  - Set axis_steps_per_unit - same syntax as G92
 
 //Stepper Movement Variables
@@ -362,10 +361,6 @@ inline void process_commands()
         code_seen('S');
         max_inactive_time = code_value()*1000; 
         break;
-      case 86: // M86 If Endstop is Not Activated then Abort Print
-        if(code_seen('X')) if( digitalRead(X_MIN_PIN) == ENDSTOPS_INVERTING ) kill(3);
-        if(code_seen('Y')) if( digitalRead(Y_MIN_PIN) == ENDSTOPS_INVERTING ) kill(4);
-        break;
       case 92: // M92
         if(code_seen('X')) x_steps_per_unit = code_value();
         if(code_seen('Y')) y_steps_per_unit = code_value();
@@ -509,7 +504,6 @@ inline void do_x_step()
 {
   digitalWrite(X_STEP_PIN, HIGH);
   previous_micros_x = micros();
-  //delayMicroseconds(3);
   digitalWrite(X_STEP_PIN, LOW);
 }
 
@@ -517,7 +511,6 @@ inline void do_y_step()
 {
   digitalWrite(Y_STEP_PIN, HIGH);
   previous_micros_y = micros();
-  //delayMicroseconds(3);
   digitalWrite(Y_STEP_PIN, LOW);
 }
 
@@ -525,7 +518,6 @@ inline void do_z_step()
 {
   digitalWrite(Z_STEP_PIN, HIGH);
   previous_micros_z = micros();
-  //delayMicroseconds(3);
   digitalWrite(Z_STEP_PIN, LOW);
 }
 
@@ -533,7 +525,6 @@ inline void do_e_step()
 {
   digitalWrite(E_STEP_PIN, HIGH);
   previous_micros_e = micros();
-  //delayMicroseconds(3);
   digitalWrite(E_STEP_PIN, LOW);
 }
 
@@ -563,7 +554,6 @@ inline void manage_bed_heater()
   
   if(bed_current_raw >= bed_target_raw) digitalWrite(BED_HEATER_0_PIN, LOW);
   else digitalWrite(BED_HEATER_0_PIN, HIGH);
-
 }
 
 // Takes temperature value as input and returns corresponding analog value from RepRap thermistor temp table.
