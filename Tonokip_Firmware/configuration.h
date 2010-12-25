@@ -1,6 +1,3 @@
-#ifndef PARAMETERS_H
-#define PARAMETERS_H
-
 // PLEASE VERIFY PIN ASSIGNMENTS FOR YOUR CONFIGURATION!!!!!!!
 
 // THERMOCOUPLE SUPPORT UNTESTED... USE WITH CAUTION!!!!
@@ -42,9 +39,8 @@ const bool max_software_endstops = true;  //If true, axis won't move to coordina
 const int X_MAX_LENGTH = 212;
 const int Y_MAX_LENGTH = 205;
 const int Z_MAX_LENGTH = 70;
-const bool max_hardware_endstops = false;  //If true, the software endstops are ignored
+const bool max_hardware_endstops = false;  //If true, the max software endstops are ignored
 //Just a note. If anyone is running without min hardware endstops, make sure when you start your machine, the axes are at the origin...
 
 #define BAUDRATE 115200
 
-#endif

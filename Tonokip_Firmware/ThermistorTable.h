@@ -1,6 +1,3 @@
-#ifndef THERMISTORTABLE_H_
-#define THERMISTORTABLE_H_
-
 // Thermistor lookup table for RepRap Temperature Sensor Boards (http://make.rrrf.org/ts)
 // See this page:  
 // http://dev.www.reprap.org/bin/view/Main/Thermistor
@@ -42,4 +39,3 @@ short temptable[NUMTEMPS][2] = {
  };
 
 
-#endif

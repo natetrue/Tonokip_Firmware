@@ -1,13 +1,3 @@
-#ifndef PINS_H
-#define PINS_H
-
-//////////////////FIX THIS//////////////why?
-#ifndef __AVR_ATmega1280__
- #ifndef __AVR_ATmega2560__
- #error Oops!  Make sure you have 'Arduino Mega' selected from the 'Tools -> Boards' menu.
- #endif
-#endif
-
 #define X_STEP_PIN         26
 #define X_DIR_PIN          28
 #define X_ENABLE_PIN       24
@@ -54,4 +44,3 @@
 #define COLD_AIR_FLAP	  	6	//servo actuated, need PWM
 #define COLD_AIR_FAN	    	7
 
-#endif
