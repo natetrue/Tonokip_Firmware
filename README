@@ -3,12 +3,19 @@ Tonokip RepRap firmware rewrite based off of Hydra-mmm firmware.
 	It also provides additional functionality and G/M code support.
 
 TODO:
-Max Endstop support (easy).
 Store internal position using steps(long int) instead of units(float).
-Test thermocouple support.
-Work on testing the M116 and M141 codes.
+Work on chamber code.
 
+Needs to be tested/verified, but should work(:
+Thermocouple support.
+Max Endstop support.
+M112
+M116
+M114
+M115
+M141
 
 Note:
 Tonokip originally wrote this firmware in early 2010. With improving reprap technologies, it was nessecary needed to add additional G code support. 
 If anybody feels a code needs to be supported you can email me at tesla893@gmail.com or talk to me on the #reprap IRC, where my username is tesla893.
+Most of what I am doing is maintenece and cleanup. Thanks to Tonokip, the Hydra-mmm team and the RepRap core team for all their work. 
