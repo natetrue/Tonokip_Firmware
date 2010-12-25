@@ -24,6 +24,8 @@
 // M107 - Fan off
 // M109 - Wait for nozzle current temp to reach target temp.
 // M112 - Emergency Stop
+// M114 - Get Current Position	**Still working on this one.
+// M115 - Get Firmware Version and Capabilities		**Still working on this one.
 // M116 - Wait for nozzle AND Bed to get up to target temp     
 // M140 - Set heated bed temp
 // M141 - Set chamber temp		**Still working on this one.
@@ -454,7 +456,8 @@ void linear_move(unsigned long x_steps_remaining, unsigned long y_steps_remainin
   
   previous_millis_heater = millis();
 
-  //while(x_steps_remaining > 0 || y_steps_remaining > 0 || z_steps_remaining > 0 || e_steps_remaining > 0) // move until no more steps remain
+  //while(x_steps_remaining > 0 || y_steps_remaining > 0 || z_steps_remaining > 0 || e_steps_remaining > 0) // move until no more steps remain 
+	//SK 2010.12.25 - The above compiled 2 bytes smaller. I wonder why it was commented out?
   while(x_steps_remaining + y_steps_remaining + z_steps_remaining + e_steps_remaining > 0) // move until no more steps remain
   { 
     if(x_steps_remaining) {
