@@ -36,9 +36,9 @@
 //chamber settings
 	//Not really sure how i am going to settle on this one, but i think the cold air stuff might go away
 
-#define CHAMBER_TEMP_PIN		4	//analog
+#define CHAMBER_TEMP_PIN		-1	//analog
 
-#define EXHAUST_FLAP_PIN		4	//servo actuated, need PWM	  
-#define EXHAUST_FAN_PIN		5
+#define EXHAUST_FLAP_PIN		-1	//servo actuated, need PWM	  
+#define EXHAUST_FAN_PIN		-1
 
 
