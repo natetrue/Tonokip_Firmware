@@ -44,7 +44,7 @@ bool direction_x, direction_y, direction_z, direction_e;
 unsigned long previous_micros=0, previous_micros_x=0, previous_micros_y=0, previous_micros_z=0, previous_micros_e=0, previous_millis_heater;
 unsigned long x_steps_to_take, y_steps_to_take, z_steps_to_take, e_steps_to_take;
 float destination_x =0.0, destination_y = 0.0, destination_z = 0.0, destination_e = 0.0;
-float current_x = 0.0, current_y = 0.0, current_z = 0.0, current_e = 0.0;
+float current_x = 0.0, current_y = 0.0, current_z = 0.0, current_e = 0.0;		//migrate this to steps rather than units
 float x_interval, y_interval, z_interval, e_interval; // for speed delay
 float feedrate = 1500, next_feedrate;
 float time_for_move;
@@ -84,19 +84,17 @@ void setup()
   if(Z_DIR_PIN > -1) pinMode(Z_DIR_PIN,OUTPUT);
   if(E_DIR_PIN > -1) pinMode(E_DIR_PIN,OUTPUT);
 
-  //Steppers default to disabled.
-  if(X_ENABLE_PIN > -1) if(!X_ENABLE_ON) digitalWrite(X_ENABLE_PIN,HIGH);
-  if(Y_ENABLE_PIN > -1) if(!Y_ENABLE_ON) digitalWrite(Y_ENABLE_PIN,HIGH);
-  if(Z_ENABLE_PIN > -1) if(!Z_ENABLE_ON) digitalWrite(Z_ENABLE_PIN,HIGH);
-  if(E_ENABLE_PIN > -1) if(!E_ENABLE_ON) digitalWrite(E_ENABLE_PIN,HIGH);
-  
   //Initialize Enable Pins
   if(X_ENABLE_PIN > -1) pinMode(X_ENABLE_PIN,OUTPUT);
   if(Y_ENABLE_PIN > -1) pinMode(Y_ENABLE_PIN,OUTPUT);
   if(Z_ENABLE_PIN > -1) pinMode(Z_ENABLE_PIN,OUTPUT);
   if(E_ENABLE_PIN > -1) pinMode(E_ENABLE_PIN,OUTPUT);
 
-  if(HEATER_0_PIN > -1) pinMode(HEATER_0_PIN,OUTPUT);
+  //Steppers default to disabled.
+  if(X_ENABLE_PIN > -1) if(!X_ENABLE_ON) digitalWrite(X_ENABLE_PIN,HIGH);
+  if(Y_ENABLE_PIN > -1) if(!Y_ENABLE_ON) digitalWrite(Y_ENABLE_PIN,HIGH);
+  if(Z_ENABLE_PIN > -1) if(!Z_ENABLE_ON) digitalWrite(Z_ENABLE_PIN,HIGH);
+  if(E_ENABLE_PIN > -1) if(!E_ENABLE_ON) digitalWrite(E_ENABLE_PIN,HIGH);
   
   Serial.begin(BAUDRATE);
   Serial.println("start");
@@ -230,34 +228,6 @@ inline void process_commands()
         if(z_steps_to_take) z_interval = time_for_move/z_steps_to_take;
         if(e_steps_to_take) e_interval = time_for_move/e_steps_to_take;
         
-        #define DEBUGGING false
-        if(DEBUGGING) {
-          Serial.print("destination_x: "); Serial.println(destination_x); 
-          Serial.print("current_x: "); Serial.println(current_x); 
-          Serial.print("x_steps_to_take: "); Serial.println(x_steps_to_take); 
-          Serial.print("X_TIME_FOR_MVE: "); Serial.println(X_TIME_FOR_MOVE); 
-          Serial.print("x_interval: "); Serial.println(x_interval); 
-          Serial.println("");
-          Serial.print("destination_y: "); Serial.println(destination_y); 
-          Serial.print("current_y: "); Serial.println(current_y); 
-          Serial.print("y_steps_to_take: "); Serial.println(y_steps_to_take); 
-          Serial.print("Y_TIME_FOR_MVE: "); Serial.println(Y_TIME_FOR_MOVE); 
-          Serial.print("y_interval: "); Serial.println(y_interval); 
-          Serial.println("");
-          Serial.print("destination_z: "); Serial.println(destination_z); 
-          Serial.print("current_z: "); Serial.println(current_z); 
-          Serial.print("z_steps_to_take: "); Serial.println(z_steps_to_take); 
-          Serial.print("Z_TIME_FOR_MVE: "); Serial.println(Z_TIME_FOR_MOVE); 
-          Serial.print("z_interval: "); Serial.println(z_interval); 
-          Serial.println("");
-          Serial.print("destination_e: "); Serial.println(destination_e); 
-          Serial.print("current_e: "); Serial.println(current_e); 
-          Serial.print("e_steps_to_take: "); Serial.println(e_steps_to_take); 
-          Serial.print("E_TIME_FOR_MVE: "); Serial.println(E_TIME_FOR_MOVE); 
-          Serial.print("e_interval: "); Serial.println(e_interval); 
-          Serial.println("");
-        }
-        
         linear_move(x_steps_to_take, y_steps_to_take, z_steps_to_take, e_steps_to_take); // make the move
         ClearToSend();
         return;
@@ -313,6 +283,7 @@ inline void process_commands()
             previous_millis_heater = millis(); 
           }
           manage_heater();
+	  manage_bed_heater();
         }
         break;
 	case 112: // M112 - Emergency Stop
@@ -453,9 +424,9 @@ void linear_move(unsigned long x_steps_remaining, unsigned long y_steps_remainin
   if(X_MIN_PIN > -1) if(!direction_x) if(digitalRead(X_MIN_PIN) != ENDSTOPS_INVERTING) x_steps_remaining=0;
   if(Y_MIN_PIN > -1) if(!direction_y) if(digitalRead(Y_MIN_PIN) != ENDSTOPS_INVERTING) y_steps_remaining=0;
   if(Z_MIN_PIN > -1) if(!direction_z) if(digitalRead(Z_MIN_PIN) != ENDSTOPS_INVERTING) z_steps_remaining=0;
-  if(X_MAX_PIN > -1) if(direction_x) if(digitalRead(X_MAX_PIN) != ENDSTOPS_INVERTING) x_steps_remaining=0;
-  if(Y_MAX_PIN > -1) if(direction_y) if(digitalRead(Y_MAX_PIN) != ENDSTOPS_INVERTING) y_steps_remaining=0;
-  if(Z_MAX_PIN > -1) if(direction_z) if(digitalRead(Z_MAX_PIN) != ENDSTOPS_INVERTING) z_steps_remaining=0;
+  if(X_MAX_PIN > -1 && max_hardware_endstops == true) if(direction_x) if(digitalRead(X_MAX_PIN) != ENDSTOPS_INVERTING) x_steps_remaining=0;
+  if(Y_MAX_PIN > -1 && max_hardware_endstops == true) if(direction_y) if(digitalRead(Y_MAX_PIN) != ENDSTOPS_INVERTING) y_steps_remaining=0;
+  if(Z_MAX_PIN > -1 && max_hardware_endstops == true) if(direction_z) if(digitalRead(Z_MAX_PIN) != ENDSTOPS_INVERTING) z_steps_remaining=0;
   
   previous_millis_heater = millis();
 

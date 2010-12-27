@@ -45,6 +45,7 @@ const bool max_hardware_endstops = false;  //If true, the max software endstops 
 
 //Chamber Settings
 const bool servo_inverting = true; //Inverts the servo direction (PWM value)
+const int chamber_checks = 100; //This defines how many times we need to check the extruder temp before we check the chamber temp 
 
 #define BAUDRATE 115200
 
