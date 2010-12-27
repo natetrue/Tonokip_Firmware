@@ -36,16 +36,16 @@ const bool INVERT_E_DIR = false;
 //Endstop Settings
 const bool ENDSTOPS_INVERTING = true;
 const bool min_software_endstops = false; //If true, axis won't move to coordinates less than zero.
-const bool max_software_endstops = true;  //If true, axis won't move to coordinates greater than the defined lengths below.
+const bool max_software_endstops = false;  //If true, axis won't move to coordinates greater than the defined lengths below.
 const int X_MAX_LENGTH = 212;
 const int Y_MAX_LENGTH = 205;
 const int Z_MAX_LENGTH = 70;
-const bool max_hardware_endstops = false;  //If true, the max software endstops are ignored
+const bool max_hardware_endstops = true;  //If true, the max software endstops should be set to false
 //Just a note. If anyone is running without min hardware endstops, make sure when you start your machine, the axes are at the origin...
 
 //Chamber Settings
 const bool servo_inverting = true; //Inverts the servo direction (PWM value)
-const int chamber_checks = 100; //This defines how many times we need to check the extruder temp before we check the chamber temp 
+const int chamber_check = 1000; //This defines how many times we need to check the extruder temp before we check the chamber temp 
 
 #define BAUDRATE 115200
 

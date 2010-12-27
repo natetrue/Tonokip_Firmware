@@ -65,6 +65,8 @@ int nozzle_target_raw = 0;
 int nozzle_current_raw;
 int bed_target_raw = 0;
 int bed_current_raw;
+int chamber_target_raw = 0;
+int chamber_current_raw;
 
 //Inactivity shutdown variables
 unsigned long previous_millis_cmd=0;
@@ -306,10 +308,14 @@ inline void process_commands()
 	case 140: // M140
         if (code_seen('S')) bed_target_raw = temp2analog(code_value());
         break;
-      case 106: //M106 Fan On
+	//case 140: // M141
+       // if (code_seen('S')) chamber_target_raw = temp2analog(code_value());
+	//manage_chamber();
+       // break;
+      case 106: //M106 - Fan On
         digitalWrite(FAN_PIN, HIGH);
         break;
-      case 107: //M107 Fan Off
+      case 107: //M107 - Fan Off
         digitalWrite(FAN_PIN, LOW);
         break;
       case 80: // M81 - ATX Power On
@@ -394,7 +400,7 @@ inline void get_coordinates()
     if (destination_z < 0) destination_z = 0.0;
   }
 
-  if (max_software_endstops == true && max_hardware_endstops == false) {
+  if (max_software_endstops == true) {
     if (destination_x > X_MAX_LENGTH) destination_x = X_MAX_LENGTH;
     if (destination_y > Y_MAX_LENGTH) destination_y = Y_MAX_LENGTH;
     if (destination_z > Z_MAX_LENGTH) destination_z = Z_MAX_LENGTH;
@@ -424,9 +430,9 @@ void linear_move(unsigned long x_steps_remaining, unsigned long y_steps_remainin
   if(X_MIN_PIN > -1) if(!direction_x) if(digitalRead(X_MIN_PIN) != ENDSTOPS_INVERTING) x_steps_remaining=0;
   if(Y_MIN_PIN > -1) if(!direction_y) if(digitalRead(Y_MIN_PIN) != ENDSTOPS_INVERTING) y_steps_remaining=0;
   if(Z_MIN_PIN > -1) if(!direction_z) if(digitalRead(Z_MIN_PIN) != ENDSTOPS_INVERTING) z_steps_remaining=0;
-  if(X_MAX_PIN > -1 && max_hardware_endstops == true) if(direction_x) if(digitalRead(X_MAX_PIN) != ENDSTOPS_INVERTING) x_steps_remaining=0;
-  if(Y_MAX_PIN > -1 && max_hardware_endstops == true) if(direction_y) if(digitalRead(Y_MAX_PIN) != ENDSTOPS_INVERTING) y_steps_remaining=0;
-  if(Z_MAX_PIN > -1 && max_hardware_endstops == true) if(direction_z) if(digitalRead(Z_MAX_PIN) != ENDSTOPS_INVERTING) z_steps_remaining=0;
+  if(X_MAX_PIN > -1) if(direction_x) if(digitalRead(X_MAX_PIN) != ENDSTOPS_INVERTING) x_steps_remaining=0;
+  if(Y_MAX_PIN > -1) if(direction_y) if(digitalRead(Y_MAX_PIN) != ENDSTOPS_INVERTING) y_steps_remaining=0;
+  if(Z_MAX_PIN > -1) if(direction_z) if(digitalRead(Z_MAX_PIN) != ENDSTOPS_INVERTING) z_steps_remaining=0;
   
   previous_millis_heater = millis();
 
@@ -519,12 +525,17 @@ inline void  enable_e() { if(E_ENABLE_PIN > -1) digitalWrite(E_ENABLE_PIN, E_ENA
 
 inline void manage_heater()
 {
+ // chamber_turn++;
   nozzle_current_raw = analogRead(TEMP_0_PIN);                  // If using thermistor, when the heater is colder than targer temp, we get a higher analog reading than target, 
   if(USE_THERMISTOR) nozzle_current_raw = 1023 - nozzle_current_raw;   // this switches it up so that the reading appears lower than target for the control logic.
   
   if(nozzle_current_raw >= nozzle_target_raw) digitalWrite(HEATER_0_PIN, LOW);
   else digitalWrite(HEATER_0_PIN, HIGH);
-
+	//if (CHAMBER_Tif (chamber_turn == chamber_check){
+	//	chamber_turn = 0;	//kinda hack, we will see how it works
+	//	manage_chamber();
+	//}
+		
 }
 
 inline void manage_bed_heater()
@@ -535,6 +546,19 @@ inline void manage_bed_heater()
   if(bed_current_raw >= bed_target_raw) digitalWrite(BED_HEATER_0_PIN, LOW);
   else digitalWrite(BED_HEATER_0_PIN, HIGH);
 }
+/*
+inline void manage_chamber()
+{
+  chamber_current_raw = analogRead(CHAMBER_TEMP_PIN);                  // If using thermistor, when the heater is colder than targer temp, we get a higher analog reading than target, 
+  if(USE_THERMISTOR) chamber_current_raw = 1023 - chamber_current_raw;   // this switches it up so that the reading appears lower than target for the control logic.
+  
+  if(chamber_current_raw >= chamber_target_raw){
+	 digitalWrite(BED_HEATER_0_PIN, LOW);
+		}
+  else digitalWrite(BED_HEATER_0_PIN, HIGH);
+}
+*/
+
 
 // Takes temperature value as input and returns corresponding analog value from RepRap thermistor temp table.
 // This is needed because PID in hydra firmware hovers around a given analog value, not a temp value.
@@ -605,9 +629,7 @@ inline void kill(byte debug)
   disable_e;
   
   if(PS_ON_PIN > -1) pinMode(PS_ON_PIN,INPUT);
-  
-  while(1)
-  {
+
     switch(debug)
     {
       case 1: Serial.print("Inactivity Shutdown, Last Line: "); break;
@@ -617,8 +639,9 @@ inline void kill(byte debug)
       case 5: Serial.print("User terminated, Last Line: "); break;
     } 
     Serial.println(gcode_LastN);
-    delay(5000); // 5 Second delay
-  }
+
 }
 
-inline void manage_inactivity(byte debug) { if( (millis()-previous_millis_cmd) >  max_inactive_time ) if(max_inactive_time) kill(debug); }
+inline void manage_inactivity(byte debug) { 
+	if( (millis()-previous_millis_cmd) >  max_inactive_time ) if(max_inactive_time) kill(debug); 
+		}
