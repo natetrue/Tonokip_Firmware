@@ -2,6 +2,7 @@
 
 // THERMOCOUPLE SUPPORT UNTESTED... USE WITH CAUTION!!!!
 const bool USE_THERMISTOR = true; //Set to false if using thermocouple
+//If using thermocouple with RAMPS you cannot use the t0 and t1 labeled headers, you need to use an empty analog pin.
 
 // Calibration formulas
 // e_extruded_steps_per_mm = e_feedstock_steps_per_mm * (desired_extrusion_diameter^2 / feedstock_diameter^2)
@@ -41,6 +42,9 @@ const int Y_MAX_LENGTH = 205;
 const int Z_MAX_LENGTH = 70;
 const bool max_hardware_endstops = false;  //If true, the max software endstops are ignored
 //Just a note. If anyone is running without min hardware endstops, make sure when you start your machine, the axes are at the origin...
+
+//Chamber Settings
+const bool servo_inverting = true; //Inverts the servo direction (PWM value)
 
 #define BAUDRATE 115200
 

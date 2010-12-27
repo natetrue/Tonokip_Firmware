@@ -38,9 +38,7 @@
 
 #define CHAMBER_TEMP		4	//analog
 
-#define HOT_AIR_FLAP		4	//servo actuated, need PWM	  
-#define HOT_AIR_FAN		5
+#define EXHAUST_FLAP		4	//servo actuated, need PWM	  
+#define EXHAUST_FAN		5
 
-#define COLD_AIR_FLAP	  	6	//servo actuated, need PWM
-#define COLD_AIR_FAN	    	7
 

@@ -423,7 +423,7 @@ inline void get_coordinates()
     if (destination_z < 0) destination_z = 0.0;
   }
 
-  if (max_software_endstops) {
+  if (max_software_endstops == true && max_hardware_endstops == false) {
     if (destination_x > X_MAX_LENGTH) destination_x = X_MAX_LENGTH;
     if (destination_y > Y_MAX_LENGTH) destination_y = Y_MAX_LENGTH;
     if (destination_z > Z_MAX_LENGTH) destination_z = Z_MAX_LENGTH;
@@ -453,6 +453,9 @@ void linear_move(unsigned long x_steps_remaining, unsigned long y_steps_remainin
   if(X_MIN_PIN > -1) if(!direction_x) if(digitalRead(X_MIN_PIN) != ENDSTOPS_INVERTING) x_steps_remaining=0;
   if(Y_MIN_PIN > -1) if(!direction_y) if(digitalRead(Y_MIN_PIN) != ENDSTOPS_INVERTING) y_steps_remaining=0;
   if(Z_MIN_PIN > -1) if(!direction_z) if(digitalRead(Z_MIN_PIN) != ENDSTOPS_INVERTING) z_steps_remaining=0;
+  if(X_MAX_PIN > -1) if(direction_x) if(digitalRead(X_MAX_PIN) != ENDSTOPS_INVERTING) x_steps_remaining=0;
+  if(Y_MAX_PIN > -1) if(direction_y) if(digitalRead(Y_MAX_PIN) != ENDSTOPS_INVERTING) y_steps_remaining=0;
+  if(Z_MAX_PIN > -1) if(direction_z) if(digitalRead(Z_MAX_PIN) != ENDSTOPS_INVERTING) z_steps_remaining=0;
   
   previous_millis_heater = millis();
 
@@ -463,16 +466,19 @@ void linear_move(unsigned long x_steps_remaining, unsigned long y_steps_remainin
     if(x_steps_remaining) {
       if ((micros()-previous_micros_x) >= x_interval) { do_x_step(); x_steps_remaining--; }
       if(X_MIN_PIN > -1) if(!direction_x) if(digitalRead(X_MIN_PIN) != ENDSTOPS_INVERTING) x_steps_remaining=0;
+      if(X_MAX_PIN > -1) if(direction_x) if(digitalRead(X_MAX_PIN) != ENDSTOPS_INVERTING) x_steps_remaining=0;
     }
     
     if(y_steps_remaining) {
       if ((micros()-previous_micros_y) >= y_interval) { do_y_step(); y_steps_remaining--; }
       if(Y_MIN_PIN > -1) if(!direction_y) if(digitalRead(Y_MIN_PIN) != ENDSTOPS_INVERTING) y_steps_remaining=0;
+	if(Y_MAX_PIN > -1) if(direction_y) if(digitalRead(Y_MAX_PIN) != ENDSTOPS_INVERTING) y_steps_remaining=0;
     }
     
     if(z_steps_remaining) {
       if ((micros()-previous_micros_z) >= z_interval) { do_z_step(); z_steps_remaining--; }
       if(Z_MIN_PIN > -1) if(!direction_z) if(digitalRead(Z_MIN_PIN) != ENDSTOPS_INVERTING) z_steps_remaining=0;
+	if(Z_MAX_PIN > -1) if(direction_z) if(digitalRead(Z_MAX_PIN) != ENDSTOPS_INVERTING) z_steps_remaining=0;
     }    
     
     if(e_steps_remaining) if ((micros()-previous_micros_e) >= e_interval) { do_e_step(); e_steps_remaining--; }
