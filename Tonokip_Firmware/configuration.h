@@ -13,7 +13,7 @@ const bool USE_THERMISTOR = true; //Set to false if using thermocouple
 float x_steps_per_unit = 64;	//64 for 10 tooth 5mm pulleys
 float y_steps_per_unit = 64;	
 float z_steps_per_unit = 3072;	
-float e_steps_per_unit = 17.6;	//17.6 for adrians 36.65 for MakerGear extruder    What is wades?
+float e_steps_per_unit = 14.7;	//17.6 for adrians 36.7 for MakerGear extruder 14.7 for wades(Varies based on hobbing) ****these are all calculated for 16x microstepping
 float max_feedrate = 18000;
 
 //For Inverting Stepper Enable Pins (Active Low) use 0, Non Inverting (Active High) use 1

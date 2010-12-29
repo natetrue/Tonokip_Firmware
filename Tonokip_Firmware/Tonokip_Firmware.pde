@@ -65,8 +65,8 @@ int nozzle_target_raw = 0;
 int nozzle_current_raw;
 int bed_target_raw = 0;
 int bed_current_raw;
-int chamber_target_raw = 0;
-int chamber_current_raw;
+//int chamber_target_raw = 0;
+//int chamber_current_raw;
 
 //Inactivity shutdown variables
 unsigned long previous_millis_cmd=0;
@@ -74,6 +74,18 @@ unsigned long max_inactive_time = 0;
 
 void setup()
 { 
+ //Steppers default to disabled.
+  if(X_ENABLE_PIN > -1) if(!X_ENABLE_ON) digitalWrite(X_ENABLE_PIN,HIGH);
+  if(Y_ENABLE_PIN > -1) if(!Y_ENABLE_ON) digitalWrite(Y_ENABLE_PIN,HIGH);
+  if(Z_ENABLE_PIN > -1) if(!Z_ENABLE_ON) digitalWrite(Z_ENABLE_PIN,HIGH);
+  if(E_ENABLE_PIN > -1) if(!E_ENABLE_ON) digitalWrite(E_ENABLE_PIN,HIGH);
+
+  //Initialize Enable Pins
+  if(X_ENABLE_PIN > -1) pinMode(X_ENABLE_PIN,OUTPUT);
+  if(Y_ENABLE_PIN > -1) pinMode(Y_ENABLE_PIN,OUTPUT);
+  if(Z_ENABLE_PIN > -1) pinMode(Z_ENABLE_PIN,OUTPUT);
+  if(E_ENABLE_PIN > -1) pinMode(E_ENABLE_PIN,OUTPUT);
+
   //Initialize Step Pins
   if(X_STEP_PIN > -1) pinMode(X_STEP_PIN,OUTPUT);
   if(Y_STEP_PIN > -1) pinMode(Y_STEP_PIN,OUTPUT);
@@ -86,17 +98,7 @@ void setup()
   if(Z_DIR_PIN > -1) pinMode(Z_DIR_PIN,OUTPUT);
   if(E_DIR_PIN > -1) pinMode(E_DIR_PIN,OUTPUT);
 
-  //Initialize Enable Pins
-  if(X_ENABLE_PIN > -1) pinMode(X_ENABLE_PIN,OUTPUT);
-  if(Y_ENABLE_PIN > -1) pinMode(Y_ENABLE_PIN,OUTPUT);
-  if(Z_ENABLE_PIN > -1) pinMode(Z_ENABLE_PIN,OUTPUT);
-  if(E_ENABLE_PIN > -1) pinMode(E_ENABLE_PIN,OUTPUT);
 
-  //Steppers default to disabled.
-  if(X_ENABLE_PIN > -1) if(!X_ENABLE_ON) digitalWrite(X_ENABLE_PIN,HIGH);
-  if(Y_ENABLE_PIN > -1) if(!Y_ENABLE_ON) digitalWrite(Y_ENABLE_PIN,HIGH);
-  if(Z_ENABLE_PIN > -1) if(!Z_ENABLE_ON) digitalWrite(Z_ENABLE_PIN,HIGH);
-  if(E_ENABLE_PIN > -1) if(!E_ENABLE_ON) digitalWrite(E_ENABLE_PIN,HIGH);
   
   Serial.begin(BAUDRATE);
   Serial.println("start");
@@ -431,9 +433,9 @@ void linear_move(unsigned long x_steps_remaining, unsigned long y_steps_remainin
 
   previous_millis_heater = millis();
 
-  //while(x_steps_remaining > 0 || y_steps_remaining > 0 || z_steps_remaining > 0 || e_steps_remaining > 0) // move until no more steps remain 
+  while(x_steps_remaining > 0 || y_steps_remaining > 0 || z_steps_remaining > 0 || e_steps_remaining > 0) // move until no more steps remain 
 	//SK 2010.12.25 - The above compiled 2 bytes smaller. I wonder why it was commented out?
-  while(x_steps_remaining + y_steps_remaining + z_steps_remaining + e_steps_remaining > 0) // move until no more steps remain
+  //while(x_steps_remaining + y_steps_remaining + z_steps_remaining + e_steps_remaining > 0) // move until no more steps remain
   { 
     if(x_steps_remaining) {
       if ((micros()-previous_micros_x) >= x_interval) { do_x_step(); x_steps_remaining--; }
@@ -591,7 +593,7 @@ float analog2temp(int raw) {
     int celsius = 0;
     byte i;
 
-    for (i=1; i<NUMTEMPS; i++)
+    for (i=1; i < NUMTEMPS; i++)
     {
       if (temptable[i][0] > raw)
       {
