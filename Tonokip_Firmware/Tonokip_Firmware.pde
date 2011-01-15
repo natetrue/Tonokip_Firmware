@@ -564,7 +564,7 @@ inline void manage_bed_heater()
   if(bed_current_raw >= bed_target_raw) digitalWrite(BED_HEATER_0_PIN, LOW);
   else digitalWrite(BED_HEATER_0_PIN, HIGH);
 }
-
+/*
 inline void manage_chamber()
 {
   chamber_current_raw = analogRead(CHAMBER_TEMP_PIN);                  // If using thermistor, when the heater is colder than targer temp, we get a higher analog reading than target, 
@@ -575,7 +575,7 @@ inline void manage_chamber()
 		}
   else digitalWrite(EXHAUST_FAN_PIN, HIGH);
 }
-
+*/
 
 
 // Takes temperature value as input and returns corresponding analog value from RepRap thermistor temp table.
