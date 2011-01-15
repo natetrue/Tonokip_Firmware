@@ -8,7 +8,6 @@ Work on chamber code.
 
 Needs to be tested/verified, but should work(:
 Thermocouple support.
-Max Endstop support.
 M112
 M116
 M114
