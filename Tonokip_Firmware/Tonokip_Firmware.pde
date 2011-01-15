@@ -24,8 +24,8 @@
 // M107 - Fan off
 // M109 - Wait for nozzle current temp to reach target temp.
 // M112 - Emergency Stop
-// M114 - Get Current Position	**Still working on this one.
-// M115 - Get Firmware Version and Capabilities		**Still working on this one.
+// M114 - Get Current Position	
+// M115 - Get Firmware Version and Capabilities		
 // M116 - Wait for nozzle AND Bed to get up to target temp     
 // M140 - Set heated bed temp
 // M141 - Set chamber temp		**Still working on this one.
@@ -274,7 +274,7 @@ inline void process_commands()
         Serial.print( analog2temp(analogRead(TEMP_0_PIN)) ); 
 	Serial.print(" B:");
         Serial.println( analog2temp(analogRead(BED_TEMP_0_PIN)) );
-        if(!code_seen('N')) return;  // If M105 is sent from generated gcode, then it needs a response.
+        //if(!code_seen('N')) return;  // If M105 is sent from generated gcode, then it needs a response.
         break;
       case 109: // M109 - Wait for heater to reach target.
         if (code_seen('S')) nozzle_target_raw = temp2analog(code_value());
@@ -348,6 +348,20 @@ inline void process_commands()
         if(code_seen('Z')) z_steps_per_unit = code_value();
         if(code_seen('E')) e_steps_per_unit = code_value();
         break;
+ 	case 114: // M114
+	Serial.print("X:");
+        Serial.print(current_x);
+	Serial.print("Y:");
+        Serial.print(current_y);
+	Serial.print("Z:");
+        Serial.print(current_z);
+	Serial.print("E:");
+        Serial.println(current_e);
+        break;
+	 case 115: // M115
+        Serial.println("Tonokip Firmware");
+        break;
+	
     }
     
   }
@@ -522,16 +536,11 @@ inline void  enable_e() { if(E_ENABLE_PIN > -1) digitalWrite(E_ENABLE_PIN, E_ENA
 
 inline void manage_heater()
 {
- // chamber_turn++;
   nozzle_current_raw = analogRead(TEMP_0_PIN);                  // If using thermistor, when the heater is colder than targer temp, we get a higher analog reading than target, 
   if(USE_THERMISTOR) nozzle_current_raw = 1023 - nozzle_current_raw;   // this switches it up so that the reading appears lower than target for the control logic.
   
   if(nozzle_current_raw >= nozzle_target_raw) digitalWrite(HEATER_0_PIN, LOW);
   else digitalWrite(HEATER_0_PIN, HIGH);
-	//if (CHAMBER_Tif (chamber_turn == chamber_check){
-	//	chamber_turn = 0;	//kinda hack, we will see how it works
-	//	manage_chamber();
-	//}
 		
 }
 
@@ -543,18 +552,18 @@ inline void manage_bed_heater()
   if(bed_current_raw >= bed_target_raw) digitalWrite(BED_HEATER_0_PIN, LOW);
   else digitalWrite(BED_HEATER_0_PIN, HIGH);
 }
-/*
+
 inline void manage_chamber()
 {
   chamber_current_raw = analogRead(CHAMBER_TEMP_PIN);                  // If using thermistor, when the heater is colder than targer temp, we get a higher analog reading than target, 
   if(USE_THERMISTOR) chamber_current_raw = 1023 - chamber_current_raw;   // this switches it up so that the reading appears lower than target for the control logic.
   
   if(chamber_current_raw >= chamber_target_raw){
-	 digitalWrite(BED_HEATER_0_PIN, LOW);
+	 digitalWrite(EXHAUST_FAN_PIN, LOW);
 		}
-  else digitalWrite(BED_HEATER_0_PIN, HIGH);
+  else digitalWrite(EXHAUST_FAN_PIN, HIGH);
 }
-*/
+
 
 
 // Takes temperature value as input and returns corresponding analog value from RepRap thermistor temp table.

@@ -34,7 +34,6 @@
 #define BED_HEATER_0_PIN	8
 
 //chamber settings
-	//Not really sure how i am going to settle on this one, but i think the cold air stuff might go away
 
 #define CHAMBER_TEMP_PIN		-1	//analog
 

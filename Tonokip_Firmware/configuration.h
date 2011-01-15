@@ -13,7 +13,7 @@ const bool USE_THERMISTOR = true; //Set to false if using thermocouple
 float x_steps_per_unit = 64;	//64 for 10 tooth 5mm pulleys
 float y_steps_per_unit = 64;	
 float z_steps_per_unit = 3072;	
-float e_steps_per_unit = 14.7;	//17.6 for adrians 36.7 for MakerGear extruder 14.7 for wades(Varies based on hobbing) ****these are all calculated for 16x microstepping
+float e_steps_per_unit = 14;	//17.6 for adrians 36.7 for MakerGear extruder 14-17 for wades(Varies based on hobbing) ****these are all calculated for 16x microstepping
 float max_feedrate = 18000;
 
 //For Inverting Stepper Enable Pins (Active Low) use 0, Non Inverting (Active High) use 1
@@ -49,8 +49,11 @@ const int Z_MAX_LENGTH = 70;
 
 
 //Chamber Settings
-const bool servo_inverting = true; //Inverts the servo direction (PWM value)
-const int chamber_check = 1000; //This defines how many times we need to check the extruder temp before we check the chamber temp 
+// NONE OF THIS WORKS YET
+const int nozzle_check = 500; //this defines how many milliseconds between checking nozzle temp
+const int hbp_check = 500; //this defines how many milliseconds between checking heated build platform temp
+const int chamber_check = 1000; //This defines how many milliseconds between checking chamber temp
+const bool servo_inverting = true; //Inverts the servo direction (PWM value) on the chamber vent
 
 #define BAUDRATE 115200
 
