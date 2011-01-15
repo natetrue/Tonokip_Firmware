@@ -48,12 +48,15 @@ const bool z_min_hardware = true;
 const int Z_MAX_LENGTH = 70;
 
 
-//Chamber Settings
+//Temperature Control Settings
 // NONE OF THIS WORKS YET
 const int nozzle_check = 500; //this defines how many milliseconds between checking nozzle temp
 const int hbp_check = 500; //this defines how many milliseconds between checking heated build platform temp
 const int chamber_check = 1000; //This defines how many milliseconds between checking chamber temp
 const bool servo_inverting = true; //Inverts the servo direction (PWM value) on the chamber vent
+//const char HEATER_0_LOW = 85;
+//const char HEATER_0_HIGH = 255;
+//const char HEATER_0_OFF = 0;
 
 #define BAUDRATE 115200
 

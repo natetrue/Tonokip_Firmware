@@ -534,6 +534,18 @@ inline void  enable_y() { if(Y_ENABLE_PIN > -1) digitalWrite(Y_ENABLE_PIN, Y_ENA
 inline void  enable_z() { if(Z_ENABLE_PIN > -1) digitalWrite(Z_ENABLE_PIN, Z_ENABLE_ON); }
 inline void  enable_e() { if(E_ENABLE_PIN > -1) digitalWrite(E_ENABLE_PIN, E_ENABLE_ON); }
 
+/*
+// From Bill2or3 http://protovision.com/2010/09/16/temperature-control-matters/
+if (target_raw <= 50) {
+analogWrite(HEATER_0_PIN,HEATER_0_OFF);
+} else {
+if(current_raw >= target_raw) {
+analogWrite(HEATER_0_PIN,HEATER_0_LOW);
+} else {
+analogWrite(HEATER_0_PIN, HEATER_0_HIGH);
+}
+*/
+
 inline void manage_heater()
 {
   nozzle_current_raw = analogRead(TEMP_0_PIN);                  // If using thermistor, when the heater is colder than targer temp, we get a higher analog reading than target, 
