@@ -1,6 +1,8 @@
 Tonokip RepRap firmware rewrite based off of Hydra-mmm firmware.
 	This fork is written with RAMPS in mind.
 	It also provides additional functionality and G/M code support.
+Tested on Arduino 18.
+Rename configuration.h.dist to configuration.h and you are good to go if you have RAMPS 1.1 or 1.2.
 
 TODO:
 Store internal position using steps(long int) instead of units(float).
