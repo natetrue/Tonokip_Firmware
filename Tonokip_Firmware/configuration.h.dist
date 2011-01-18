@@ -49,9 +49,9 @@ const int Z_MAX_LENGTH = 70;
 
 
 //Temperature Control Settings
-// NONE OF THIS WORKS YET
 const int nozzle_check = 500; //this defines how many milliseconds between checking nozzle temp
-const int hbp_check = 500; //this defines how many milliseconds between checking heated build platform temp
+const int hbp_check = 1000; //this defines how many milliseconds between checking heated build platform temp
+//nothing below this works yet :)
 const int chamber_check = 1000; //This defines how many milliseconds between checking chamber temp
 const bool servo_inverting = true; //Inverts the servo direction (PWM value) on the chamber vent
 const bool heater_pwm = false;

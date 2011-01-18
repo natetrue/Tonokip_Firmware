@@ -41,7 +41,7 @@
 
 //Stepper Movement Variables
 bool direction_x, direction_y, direction_z, direction_e;
-unsigned long previous_micros=0, previous_micros_x=0, previous_micros_y=0, previous_micros_z=0, previous_micros_e=0, previous_millis_heater;
+unsigned long previous_micros=0, previous_micros_x=0, previous_micros_y=0, previous_micros_z=0, previous_micros_e=0, previous_millis_heater, previous_millis_bed_heater;
 unsigned long x_steps_to_take, y_steps_to_take, z_steps_to_take, e_steps_to_take;
 float destination_x =0.0, destination_y = 0.0, destination_z = 0.0, destination_e = 0.0;
 float current_x = 0.0, current_y = 0.0, current_z = 0.0, current_e = 0.0;		//migrate this to steps rather than units
@@ -74,6 +74,7 @@ unsigned long max_inactive_time = 0;
 
 void setup()
 { 
+
  //Steppers default to disabled.
   if(X_ENABLE_PIN > -1) if(!X_ENABLE_ON) digitalWrite(X_ENABLE_PIN,HIGH);
   if(Y_ENABLE_PIN > -1) if(!Y_ENABLE_ON) digitalWrite(Y_ENABLE_PIN,HIGH);
@@ -110,7 +111,7 @@ void loop()
   get_command();
   manage_heater();
   manage_bed_heater();
-  manage_inactivity(1); //shutdown if not receiving any new commands
+ // manage_inactivity(1); //shutdown if not receiving any new commands
 }
 
 inline void get_command() 
@@ -239,7 +240,7 @@ inline void process_commands()
         codenum = 0;
         if(code_seen('P')) codenum = code_value(); // milliseconds to wait
         if(code_seen('S')) codenum = code_value()*1000; // seconds to wait
-        previous_millis_heater = millis();  // keep track of when we started waiting
+        previous_millis_heater = millis(); // keep track of when we started waiting
         while((millis() - previous_millis_heater) < codenum )
 		{ manage_heater(); //manage heater until time is up
 			manage_bed_heater();
@@ -446,7 +447,7 @@ void linear_move(unsigned long x_steps_remaining, unsigned long y_steps_remainin
   if(z_max_hardware) if(Z_MAX_PIN > -1) if(direction_z) if(digitalRead(Z_MAX_PIN) != ENDSTOPS_INVERTING) z_steps_remaining=0;
 
   previous_millis_heater = millis();
-
+  previous_millis_bed_heater = millis();
   while(x_steps_remaining > 0 || y_steps_remaining > 0 || z_steps_remaining > 0 || e_steps_remaining > 0) // move until no more steps remain 
 	//SK 2010.12.25 - The above compiled 2 bytes smaller. I wonder why it was commented out?
   //while(x_steps_remaining + y_steps_remaining + z_steps_remaining + e_steps_remaining > 0) // move until no more steps remain
@@ -471,12 +472,18 @@ void linear_move(unsigned long x_steps_remaining, unsigned long y_steps_remainin
     
     if(e_steps_remaining) if ((micros()-previous_micros_e) >= e_interval) { do_e_step(); e_steps_remaining--; }
     
-    if( (millis() - previous_millis_heater) >= 500 ) {
+    if( (millis() - previous_millis_heater) >= nozzle_check ) {
       manage_heater();
-	manage_bed_heater();
       previous_millis_heater = millis();
       
-      manage_inactivity(2);
+      //manage_inactivity(2);
+    }
+	if( (millis() - previous_millis_bed_heater) >= hbp_check ) {
+      
+	manage_bed_heater();
+      previous_millis_bed_heater = millis();
+      
+      //manage_inactivity(2);
     }
   }
   
@@ -660,6 +667,6 @@ inline void kill(byte debug)
 
 }
 
-inline void manage_inactivity(byte debug) { 
-	if( (millis()-previous_millis_cmd) >  max_inactive_time ) if(max_inactive_time) kill(debug); 
-		}
+//inline void manage_inactivity(byte debug) { 
+//	if( (millis()-previous_millis_cmd) >  max_inactive_time ) if(max_inactive_time) kill(debug); 
+//		}
