@@ -99,10 +99,12 @@ void setup()
   if(Z_DIR_PIN > -1) pinMode(Z_DIR_PIN,OUTPUT);
   if(E_DIR_PIN > -1) pinMode(E_DIR_PIN,OUTPUT);
 
-
+  if(HEATER_0_PIN > -1) pinMode(HEATER_0_PIN,OUTPUT);
+  if(BED_HEATER_0_PIN > -1) pinMode(BED_HEATER_0_PIN,OUTPUT);
   
   Serial.begin(BAUDRATE);
-  Serial.println("start");
+#ifdef SEND_START Serial.println("start");
+#elif
 }
 
 
@@ -119,13 +121,14 @@ inline void get_command()
 
   if( Serial.available() > 0 ) {
     serial_char = Serial.read();
+    if (serial_char >= 'a' && serial_char <= 'z') serial_char -= ('a' - 'A'); // make all commands upercase
     if(serial_char == '\n' || serial_char == '\r' || serial_char == ':' || serial_count >= (MAX_CMD_SIZE - 1) ) 
     {
       if(!serial_count) return; //if empty line
       cmdbuffer[serial_count] = 0; //terminate string
       Serial.print("Echo:");
       Serial.println(&cmdbuffer[0]);
-      
+
       process_commands();
       
       comment_mode = false; //for new command

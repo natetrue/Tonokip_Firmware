@@ -59,5 +59,8 @@ const bool heater_pwm = false;
 //const char HEATER_0_HIGH = 255;
 //const char HEATER_0_OFF = 0;
 
+//serial settings
 #define BAUDRATE 115200
+const bool SEND_START = true;
+
 
