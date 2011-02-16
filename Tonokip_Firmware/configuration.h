@@ -52,15 +52,49 @@ const int Z_MAX_LENGTH = 70;
 const int nozzle_check = 500; //this defines how many milliseconds between checking nozzle temp
 const int hbp_check = 1000; //this defines how many milliseconds between checking heated build platform temp
 //nothing below this works yet :)
-const int chamber_check = 1000; //This defines how many milliseconds between checking chamber temp
-const bool servo_inverting = true; //Inverts the servo direction (PWM value) on the chamber vent
-const bool heater_pwm = false;
+  //const int chamber_check = 1000; //This defines how many milliseconds between checking chamber temp
+  //const bool servo_inverting = true; //Inverts the servo direction (PWM value) on the chamber vent
+//#define PWMNOZZLE //for the nozzle pwm stuff
 //const char HEATER_0_LOW = 85;
 //const char HEATER_0_HIGH = 255;
 //const char HEATER_0_OFF = 0;
 
 //serial settings
 #define BAUDRATE 115200
-const bool SEND_START = true;
+#define SENDSTART //comment out on windows machines. sends "start" when booting up.
 
+
+//compilation defines
+	// these will reduce the compile size of tonokips so we might be able to get it on an Uno
+#define LINENUM
+#define CHECKSUM
+	//okok
+// G0 -> G1
+// G1  - Coordinated Movement X Y Z E
+// G4  - Dwell S<seconds> or P<milliseconds>
+// G90 - Use Absolute Coordinates
+// G91 - Use Relative Coordinates
+// G92 - Set current position to cordinates given
+
+//RepRap M Codes
+// M104 - Set target temp
+// M105 - Read current temp
+// M106 - Fan on
+// M107 - Fan off
+// M109 - Wait for nozzle current temp to reach target temp.
+// M112 - Emergency Stop
+// M114 - Get Current Position	
+// M115 - Get Firmware Version and Capabilities		
+// M116 - Wait for nozzle AND Bed to get up to target temp     
+// M140 - Set heated bed temp
+// M141 - Set chamber temp		**Still working on this one.
+
+//Custom M Codes
+// M80  - Turn on Power Supply
+// M81  - Turn off Power Supply
+// M82  - Set E codes absolute (default)
+// M83  - Set E codes relative while in Absolute Coordinates (G90) mode
+// M84  - Disable steppers until next move
+// M85  - Set inactivity shutdown timer with parameter S<seconds>. To disable set zero (default)
+// M92  - Set axis_steps_per_unit - same syntax as G92
 

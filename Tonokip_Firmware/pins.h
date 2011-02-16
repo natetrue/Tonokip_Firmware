@@ -33,7 +33,7 @@
 #define BED_TEMP_0_PIN		1
 #define BED_HEATER_0_PIN	8
 
-//chamber settings
+//chamber settings not working yet
 
 #define CHAMBER_TEMP_PIN		-1	//analog
 

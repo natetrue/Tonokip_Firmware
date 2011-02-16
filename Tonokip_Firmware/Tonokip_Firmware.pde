@@ -46,7 +46,7 @@ unsigned long x_steps_to_take, y_steps_to_take, z_steps_to_take, e_steps_to_take
 float destination_x =0.0, destination_y = 0.0, destination_z = 0.0, destination_e = 0.0;
 float current_x = 0.0, current_y = 0.0, current_z = 0.0, current_e = 0.0;		//migrate this to steps rather than units
 float x_interval, y_interval, z_interval, e_interval; // for speed delay
-float feedrate = 1500, next_feedrate;
+float feedrate = 3000, next_feedrate;
 float time_for_move;
 long gcode_N, gcode_LastN;
 bool relative_mode = false;  //Determines Absolute or Relative Coordinates
@@ -103,8 +103,9 @@ void setup()
   if(BED_HEATER_0_PIN > -1) pinMode(BED_HEATER_0_PIN,OUTPUT);
   
   Serial.begin(BAUDRATE);
-#ifdef SEND_START Serial.println("start");
-#elif
+#ifdef SENDSTART 
+	Serial.println("start");
+#endif
 }
 
 
@@ -160,7 +161,9 @@ inline bool code_seen(char code)
 
 inline void process_commands()
 {
-  unsigned long codenum; //throw away variable
+    unsigned long codenum; //throw away variable
+#ifdef LINENUM
+  
   
   if(code_seen('N'))
   {
@@ -172,7 +175,8 @@ inline void process_commands()
       FlushSerialRequestResend();
       return;
     }
-    
+#endif
+#ifdef CHECKSUM
     if(code_seen('*'))
     {
       byte checksum = 0;
@@ -207,6 +211,7 @@ inline void process_commands()
       return;
     }
   }
+#endif
 
   //continues parsing only if we don't receive any 'N' or '*' or no errors if we do. :)
   
@@ -563,7 +568,16 @@ inline void manage_heater()
   
   if(nozzle_current_raw >= nozzle_target_raw) digitalWrite(HEATER_0_PIN, LOW);
   else digitalWrite(HEATER_0_PIN, HIGH);
-		
+
+#ifdef PWM_NOZZLE
+	//	if (target_raw <= 50) {
+	//	analogWrite(HEATER_0_PIN,HEATER_0_OFF);
+	//	} else {
+	//	if(current_raw >= target_raw) {
+//	analogWrite(HEATER_0_PIN,HEATER_0_LOW);
+//	} else {
+//	analogWrite(HEATER_0_PIN, HEATER_0_HIGH);
+#endif
 }
 
 inline void manage_bed_heater()
