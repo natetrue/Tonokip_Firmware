@@ -12,8 +12,8 @@ const bool USE_THERMISTOR = true; //Set to false if using thermocouple
 //Calibration variables
 float x_steps_per_unit = 64;	//64 for 10 tooth 5mm pulleys
 float y_steps_per_unit = 64;	
-float z_steps_per_unit = 3072;	
-float e_steps_per_unit = 14;	//17.6 for adrians 36.7 for MakerGear extruder 14-17 for wades(Varies based on hobbing) ****these are all calculated for 16x microstepping
+float z_steps_per_unit = 384;	
+float e_steps_per_unit = 7;	//17.6 for adrians 36.7 for MakerGear extruder 14-17 for wades(Varies based on hobbing) ****these are all calculated for 16x microstepping
 float max_feedrate = 18000;
 
 //For Inverting Stepper Enable Pins (Active Low) use 0, Non Inverting (Active High) use 1
@@ -66,8 +66,9 @@ const int hbp_check = 1000; //this defines how many milliseconds between checkin
 
 //compilation defines
 	// these will reduce the compile size of tonokips so we might be able to get it on an Uno
-#define LINENUM
-#define CHECKSUM
+//#define LINENUM
+//#define CHECKSUM
+//#define ECHOING
 	//okok
 // G0 -> G1
 // G1  - Coordinated Movement X Y Z E

@@ -127,9 +127,10 @@ inline void get_command()
     {
       if(!serial_count) return; //if empty line
       cmdbuffer[serial_count] = 0; //terminate string
+#ifdef ECHOING      
       Serial.print("Echo:");
       Serial.println(&cmdbuffer[0]);
-
+#endif
       process_commands();
       
       comment_mode = false; //for new command
