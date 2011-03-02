@@ -371,7 +371,21 @@ inline void process_commands()
 	 case 115: // M115
         Serial.println("Tonokip Firmware");
         break;
-	
+	case 998: //M998 - Enable Internal Pullups
+        Serial.println("Set Pin Mode");
+        pinMode(Y_MIN_PIN ,INPUT);
+        digitalWrite(Y_MIN_PIN, HIGH); 
+        pinMode(X_MIN_PIN ,INPUT);
+        digitalWrite(X_MIN_PIN, HIGH); 
+        pinMode(Z_MIN_PIN ,INPUT);
+        digitalWrite(Z_MIN_PIN, HIGH); 
+        break;
+        case 999: //M999
+        Serial.print("Y Min: ");
+        Serial.println(digitalRead(Y_MIN_PIN));
+        Serial.print("X Min: ");
+        Serial.println(digitalRead(X_MIN_PIN));
+        break;
     }
     
   }
