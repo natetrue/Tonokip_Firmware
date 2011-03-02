@@ -101,8 +101,15 @@ void setup()
 
   if(HEATER_0_PIN > -1) pinMode(HEATER_0_PIN,OUTPUT);
   if(BED_HEATER_0_PIN > -1) pinMode(BED_HEATER_0_PIN,OUTPUT);
-  
-  Serial.begin(BAUDRATE);
+#ifdef USE_INTERNAL_PULLUPS
+        pinMode(Y_MIN_PIN ,INPUT);
+        digitalWrite(Y_MIN_PIN, HIGH); 
+        pinMode(X_MIN_PIN ,INPUT);
+        digitalWrite(X_MIN_PIN, HIGH); 
+        pinMode(Z_MIN_PIN ,INPUT);
+        digitalWrite(Z_MIN_PIN, HIGH); 
+#endif
+  	Serial.begin(BAUDRATE);
 #ifdef SENDSTART 
 	Serial.println("start");
 #endif
@@ -135,16 +142,15 @@ inline void get_command()
     {
       if(!serial_count) return; //if empty line
       cmdbuffer[serial_count] = 0; //terminate string
-#ifdef ECHO_GCODE
+#ifdef ECHOING      
       Serial.print("Echo:");
       Serial.println(&cmdbuffer[0]);
 #endif
-
       process_commands();
       
       comment_mode = false; //for new command
       serial_count = 0; //clear buffer
-//      Serial.println("ok"); 
+      //Serial.println("ok"); 
     }
     else
     {
@@ -379,7 +385,12 @@ inline void process_commands()
 	 case 115: // M115
         Serial.println("Tonokip Firmware");
         break;
-	
+        case 999: //M999
+        Serial.print("Y Min: ");
+        Serial.println(digitalRead(Y_MIN_PIN));
+        Serial.print("X Min: ");
+        Serial.println(digitalRead(X_MIN_PIN));
+        break;
     }
     
   }

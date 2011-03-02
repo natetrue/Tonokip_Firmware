@@ -69,9 +69,9 @@ const int hbp_check = 1000; //this defines how many milliseconds between checkin
 
 //compilation defines
 	// these will reduce the compile size of tonokips so we might be able to get it on an Uno
-#define LINENUM
-#define CHECKSUM
-//#define ECHO_GCODE
+//#define LINENUM
+//#define CHECKSUM
+//#define ECHOING
 	//okok
 // G0 -> G1
 // G1  - Coordinated Movement X Y Z E
