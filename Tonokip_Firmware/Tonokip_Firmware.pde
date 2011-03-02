@@ -108,13 +108,21 @@ void setup()
 #endif
 }
 
+inline void manage_heaters() {
+  if( (millis() - previous_millis_heater) >= nozzle_check ) {
+      manage_heater();
+      previous_millis_heater = millis();
+    }
+    if( (millis() - previous_millis_bed_heater) >= hbp_check ) {
+      manage_bed_heater();
+      previous_millis_bed_heater = millis();
+    }
+}
 
 void loop()
 {
   get_command();
-  manage_heater();
-  manage_bed_heater();
- // manage_inactivity(1); //shutdown if not receiving any new commands
+  manage_heaters();
 }
 
 inline void get_command() 
@@ -127,14 +135,16 @@ inline void get_command()
     {
       if(!serial_count) return; //if empty line
       cmdbuffer[serial_count] = 0; //terminate string
+#ifdef ECHO_GCODE
       Serial.print("Echo:");
       Serial.println(&cmdbuffer[0]);
+#endif
 
       process_commands();
       
       comment_mode = false; //for new command
       serial_count = 0; //clear buffer
-      //Serial.println("ok"); 
+//      Serial.println("ok"); 
     }
     else
     {
@@ -250,8 +260,7 @@ inline void process_commands()
         if(code_seen('S')) codenum = code_value()*1000; // seconds to wait
         previous_millis_heater = millis(); // keep track of when we started waiting
         while((millis() - previous_millis_heater) < codenum )
-		{ manage_heater(); //manage heater until time is up
-			manage_bed_heater();
+		{ manage_heaters();
 		}
         break;
       case 90: // G90
@@ -279,7 +288,7 @@ inline void process_commands()
         if (code_seen('S')) nozzle_target_raw = temp2analog(code_value());
         break;
       case 105: // M105
-        Serial.print("T:");
+        Serial.print("OK T:");
         Serial.print( analog2temp(analogRead(TEMP_0_PIN)) ); 
 	Serial.print(" B:");
         Serial.println( analog2temp(analogRead(BED_TEMP_0_PIN)) );
@@ -418,13 +427,14 @@ inline void get_coordinates()
   if(destination_e >= current_e) direction_e=1;
   else direction_e=0;
   
-  if(!x_min_hardware) if (destination_x < 0.0) destination_x = 0.0;
-  if(!y_min_hardware) if (destination_y < 0.0) destination_y = 0.0;
-  if(!z_min_hardware) if (destination_z < 0.0) destination_z = 0.0;
+  
+  if(!x_min_hardware) if (destination_x < X_MIN) destination_x = X_MIN;
+  if(!y_min_hardware) if (destination_y < Y_MIN) destination_y = Y_MIN;
+  if(!z_min_hardware) if (destination_z < Z_MIN) destination_z = Z_MIN;
 
-  if(!x_max_hardware) if (destination_x > X_MAX_LENGTH) destination_x = X_MAX_LENGTH;
-  if(!y_max_hardware) if (destination_y > Y_MAX_LENGTH) destination_y = Y_MAX_LENGTH;
-  if(!z_max_hardware) if (destination_z > Z_MAX_LENGTH) destination_z = Z_MAX_LENGTH;
+  if(!x_max_hardware) if (destination_x > X_MAX) destination_x = X_MAX;
+  if(!y_max_hardware) if (destination_y > Y_MAX) destination_y = Y_MAX;
+  if(!z_max_hardware) if (destination_z > Z_MAX) destination_z = Z_MAX;
   
   if(feedrate > max_feedrate) feedrate = max_feedrate;
 }
@@ -454,8 +464,6 @@ void linear_move(unsigned long x_steps_remaining, unsigned long y_steps_remainin
   if(y_max_hardware) if(Y_MAX_PIN > -1) if(direction_y) if(digitalRead(Y_MAX_PIN) != ENDSTOPS_INVERTING) y_steps_remaining=0;
   if(z_max_hardware) if(Z_MAX_PIN > -1) if(direction_z) if(digitalRead(Z_MAX_PIN) != ENDSTOPS_INVERTING) z_steps_remaining=0;
 
-  previous_millis_heater = millis();
-  previous_millis_bed_heater = millis();
   while(x_steps_remaining > 0 || y_steps_remaining > 0 || z_steps_remaining > 0 || e_steps_remaining > 0) // move until no more steps remain 
 	//SK 2010.12.25 - The above compiled 2 bytes smaller. I wonder why it was commented out?
   //while(x_steps_remaining + y_steps_remaining + z_steps_remaining + e_steps_remaining > 0) // move until no more steps remain
@@ -480,19 +488,7 @@ void linear_move(unsigned long x_steps_remaining, unsigned long y_steps_remainin
     
     if(e_steps_remaining) if ((micros()-previous_micros_e) >= e_interval) { do_e_step(); e_steps_remaining--; }
     
-    if( (millis() - previous_millis_heater) >= nozzle_check ) {
-      manage_heater();
-      previous_millis_heater = millis();
-      
-      //manage_inactivity(2);
-    }
-	if( (millis() - previous_millis_bed_heater) >= hbp_check ) {
-      
-	manage_bed_heater();
-      previous_millis_bed_heater = millis();
-      
-      //manage_inactivity(2);
-    }
+    manage_heaters();
   }
   
   if(DISABLE_X) disable_x();
