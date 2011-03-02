@@ -10,10 +10,10 @@ const bool USE_THERMISTOR = true; //Set to false if using thermocouple
 // units are in millimeters or whatever length unit you prefer: inches,football-fields,parsecs etc
 
 //Calibration variables
-float x_steps_per_unit = 64;	//64 for 10 tooth 5mm pulleys
-float y_steps_per_unit = 64;	
-float z_steps_per_unit = 3072;	
-float e_steps_per_unit = 14;	//17.6 for adrians 36.7 for MakerGear extruder 14-17 for wades(Varies based on hobbing) ****these are all calculated for 16x microstepping
+float x_steps_per_unit = 62.5;	//64 for 10 tooth 5mm pulleys
+float y_steps_per_unit = 64.6;	
+float z_steps_per_unit = 2259;	
+float e_steps_per_unit = 1364.8;	//17.6 for adrians 36.7 for MakerGear extruder 14-17 for wades(Varies based on hobbing) ****these are all calculated for 16x microstepping
 float max_feedrate = 18000;
 
 //For Inverting Stepper Enable Pins (Active Low) use 0, Non Inverting (Active High) use 1
@@ -28,24 +28,27 @@ const bool DISABLE_Y = false;
 const bool DISABLE_Z = true;
 const bool DISABLE_E = false;
 
-const bool INVERT_X_DIR = false;
-const bool INVERT_Y_DIR = false;
-const bool INVERT_Z_DIR = true;
-const bool INVERT_E_DIR = false;
+const bool INVERT_X_DIR = true;
+const bool INVERT_Y_DIR = true;
+const bool INVERT_Z_DIR = false;
+const bool INVERT_E_DIR = true;
 
 //Endstop Settings
 	//if you do not have max hardware endstops, it defaults to software endstops, defined by the max length numbers.
 	//if you do not have min hardware endstops, the firmware will not move to lengths less than 0
-const bool ENDSTOPS_INVERTING = true;
-const bool x_max_hardware = false;
-const bool x_min_hardware = true;
-const int X_MAX_LENGTH = 212;
-const bool y_max_hardware = false;
-const bool y_min_hardware = true;
-const int Y_MAX_LENGTH = 205;
+const bool ENDSTOPS_INVERTING = false;
+const bool x_max_hardware = true;
+const bool x_min_hardware = false;
+const int X_MIN = -100;
+const int X_MAX = 100;
+const bool y_max_hardware = true;
+const bool y_min_hardware = false;
+const int Y_MIN = -100;
+const int Y_MAX = 100;
 const bool z_max_hardware = false;
 const bool z_min_hardware = true;
-const int Z_MAX_LENGTH = 70;
+const int Z_MIN = 0;
+const int Z_MAX = 120;
 
 
 //Temperature Control Settings
@@ -68,6 +71,7 @@ const int hbp_check = 1000; //this defines how many milliseconds between checkin
 	// these will reduce the compile size of tonokips so we might be able to get it on an Uno
 #define LINENUM
 #define CHECKSUM
+//#define ECHO_GCODE
 	//okok
 // G0 -> G1
 // G1  - Coordinated Movement X Y Z E
@@ -82,6 +86,7 @@ const int hbp_check = 1000; //this defines how many milliseconds between checkin
 // M106 - Fan on
 // M107 - Fan off
 // M109 - Wait for nozzle current temp to reach target temp.
+// M110 - Set line number
 // M112 - Emergency Stop
 // M114 - Get Current Position	
 // M115 - Get Firmware Version and Capabilities		
