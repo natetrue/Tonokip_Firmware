@@ -101,8 +101,15 @@ void setup()
 
   if(HEATER_0_PIN > -1) pinMode(HEATER_0_PIN,OUTPUT);
   if(BED_HEATER_0_PIN > -1) pinMode(BED_HEATER_0_PIN,OUTPUT);
-  
-  Serial.begin(BAUDRATE);
+#ifdef USE_INTERNAL_PULLUPS
+        pinMode(Y_MIN_PIN ,INPUT);
+        digitalWrite(Y_MIN_PIN, HIGH); 
+        pinMode(X_MIN_PIN ,INPUT);
+        digitalWrite(X_MIN_PIN, HIGH); 
+        pinMode(Z_MIN_PIN ,INPUT);
+        digitalWrite(Z_MIN_PIN, HIGH); 
+#endif
+  	Serial.begin(BAUDRATE);
 #ifdef SENDSTART 
 	Serial.println("start");
 #endif
@@ -370,15 +377,6 @@ inline void process_commands()
         break;
 	 case 115: // M115
         Serial.println("Tonokip Firmware");
-        break;
-	case 998: //M998 - Enable Internal Pullups
-        Serial.println("Set Pin Mode");
-        pinMode(Y_MIN_PIN ,INPUT);
-        digitalWrite(Y_MIN_PIN, HIGH); 
-        pinMode(X_MIN_PIN ,INPUT);
-        digitalWrite(X_MIN_PIN, HIGH); 
-        pinMode(Z_MIN_PIN ,INPUT);
-        digitalWrite(Z_MIN_PIN, HIGH); 
         break;
         case 999: //M999
         Serial.print("Y Min: ");

@@ -36,6 +36,7 @@ const bool INVERT_E_DIR = false;
 //Endstop Settings
 	//if you do not have max hardware endstops, it defaults to software endstops, defined by the max length numbers.
 	//if you do not have min hardware endstops, the firmware will not move to lengths less than 0
+//#define USE_INTERNAL_PULLUPS
 const bool ENDSTOPS_INVERTING = true;
 const bool x_max_hardware = false;
 const bool x_min_hardware = true;
