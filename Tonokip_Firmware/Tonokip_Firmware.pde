@@ -178,6 +178,7 @@ inline bool code_seen(char code)
 inline void process_commands()
 {
     unsigned long codenum; //throw away variable
+    unsigned long temp2;
 #ifdef LINENUM
   
   
@@ -264,8 +265,8 @@ inline void process_commands()
         codenum = 0;
         if(code_seen('P')) codenum = code_value(); // milliseconds to wait
         if(code_seen('S')) codenum = code_value()*1000; // seconds to wait
-        previous_millis_heater = millis(); // keep track of when we started waiting
-        while((millis() - previous_millis_heater) < codenum )
+        temp2 = millis(); // keep track of when we started waiting
+        while((millis() - temp2) < codenum )
 		{ manage_heaters();
 		}
         break;
